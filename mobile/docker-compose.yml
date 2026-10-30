@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: parkmate
+      POSTGRES_USER: parkmate
+      POSTGRES_PASSWORD: parkmate
+    ports:
+      - "5432:5432"
+    volumes:
+      - parkmate_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parkmate -d parkmate"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/parkmate
+      DATABASE_USER: parkmate
+      DATABASE_PASSWORD: parkmate
+      MAPBOX_TOKEN: ${MAPBOX_TOKEN:-}
+      PORT: "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  parkmate_pgdata:

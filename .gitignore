@@ -1,0 +1,35 @@
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# PHP / Laravel
+web/vendor/
+web/node_modules/
+web/.env
+web/storage/app/installed
+web/storage/logs/*
+web/storage/framework/cache/*
+web/storage/framework/sessions/*
+web/storage/framework/views/*
+web/bootstrap/cache/*.php
+web/database/*.sqlite
+!web/storage/logs/.gitignore
+!web/storage/framework/cache/.gitignore
+!web/storage/framework/sessions/.gitignore
+!web/storage/framework/views/.gitignore
+
+# Android / Gradle
+mobile/.gradle/
+mobile/**/build/
+mobile/local.properties
+mobile/data/
+mobile/.env
+*.apk
+*.aab
+*.keystore
+
+web/composer.phar
+mobile/local.properties
+
