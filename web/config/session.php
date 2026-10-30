@@ -14,7 +14,7 @@ return [
     'lottery' => [2, 100],
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug((string) env('APP_NAME', 'shipit')).'-session'
+        Str::slug((string) env('APP_NAME', 'openlot')).'-session'
     ),
     'path' => env('SESSION_PATH', '/'),
     'domain' => env('SESSION_DOMAIN'),

@@ -4,33 +4,44 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>Install {{ config('app.name', 'OpenLot') }}</title>
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <title>Install OpenLot</title>
+    @php($assetBase = rtrim(str_replace('\\', '/', request()->getBasePath()), '/'))
+    <link rel="icon" href="{{ $assetBase }}/favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,550;9..144,650&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/openlot.css') }}">
+    <link rel="stylesheet" href="{{ $assetBase }}/css/openlot.css">
 </head>
 <body class="ol-install">
     @php($connection = old('db_connection', $selectedConnection ?? 'sqlite'))
-    <main class="ol-install-shell shell">
-        <div class="ol-brand brand" style="margin-bottom:1.5rem;">
-            <span class="ol-brand-mark brand-mark" aria-hidden="true">O</span>
+    @php($preflightReady = (bool) ($preflight['ready'] ?? false))
+    <main class="ol-install-shell">
+        <div class="ol-brand" style="margin-bottom:1.5rem;">
+            <span class="ol-brand-mark" aria-hidden="true">O</span>
             <div>
                 <div class="ol-brand-text" style="color:var(--navy);">OpenLot</div>
-                <span class="ol-brand-sub" style="color:var(--navy-muted);">Installer</span>
+                <span class="ol-brand-sub" style="color:var(--navy-muted);">First-run installer</span>
             </div>
         </div>
 
-        <ol class="ol-steps steps" aria-label="Installation progress">
-            <li><strong>1. Server check</strong>Confirm this host is ready</li>
-            <li class="active" aria-current="step"><strong>2. Configure</strong>Connect and create the site</li>
-            <li><strong>3. Complete</strong>Lock the installer</li>
+        <ol class="ol-steps" aria-label="Installation progress">
+            <li class="{{ $preflightReady ? '' : 'active' }}" @if (! $preflightReady) aria-current="step" @endif>
+                <strong>1. Server check</strong>Confirm PHP extensions and writable folders
+            </li>
+            <li class="{{ $preflightReady ? 'active' : '' }}" @if ($preflightReady) aria-current="step" @endif>
+                <strong>2. Configure</strong>Site URL, database, and admin account
+            </li>
+            <li>
+                <strong>3. Complete</strong>Lock the installer and open admin
+            </li>
         </ol>
 
         <section class="panel">
-            <h1>Set up your site</h1>
-            <p class="lead">The installer will configure the environment, create the database schema with Laravel migrations, and add your first verified account.</p>
+            <h1>Install OpenLot</h1>
+            <p class="lead">
+                This sets up the parking admin console and mobile API: environment file, database migrations,
+                sample Harare spots / fee rules, and your first admin login.
+            </p>
 
             @if (session('install_error'))
                 <div class="alert alert-danger" role="alert">{{ session('install_error') }}</div>
@@ -59,7 +70,7 @@
                 @endforeach
             </div>
 
-            @if (! $preflight['ready'])
+            @if (! $preflightReady)
                 <div class="alert alert-warning" role="alert">Fix the failed required checks and reload this page before continuing.</div>
             @endif
         </section>
@@ -72,12 +83,22 @@
                 <div class="grid">
                     <div>
                         <label for="app_name">Site name</label>
-                        <input id="app_name" name="app_name" value="{{ old('app_name', config('app.name', 'OpenLot')) }}" maxlength="255" required autocomplete="organization">
+                        <input id="app_name" name="app_name" value="{{ old('app_name', 'OpenLot') }}" maxlength="255" required autocomplete="organization">
                         @error('app_name')<span class="error">{{ $message }}</span>@enderror
                     </div>
                     <div>
                         <label for="app_url">Site URL</label>
-                        <input id="app_url" name="app_url" type="url" value="{{ old('app_url', url('/')) }}" maxlength="2048" required placeholder="https://example.com" autocomplete="url">
+                        <input
+                            id="app_url"
+                            name="app_url"
+                            type="url"
+                            value="{{ old('app_url', request()->getSchemeAndHttpHost().request()->getBasePath()) }}"
+                            maxlength="2048"
+                            required
+                            placeholder="https://openlot.companyop.com"
+                            autocomplete="url"
+                        >
+                        <span class="hint">Use your public HTTPS URL in production (for example https://openlot.companyop.com).</span>
                         @error('app_url')<span class="error">{{ $message }}</span>@enderror
                     </div>
                 </div>
@@ -126,7 +147,8 @@
             </fieldset>
 
             <fieldset>
-                <legend>First account</legend>
+                <legend>Admin account</legend>
+                <p class="hint" style="margin-top:-0.35rem;margin-bottom:1rem;">This owner can sign in at <code>/admin</code> to manage spots, fees, reports, and API keys.</p>
                 <div class="grid">
                     <div class="field-full">
                         <label for="owner_name">Name</label>
@@ -140,25 +162,26 @@
                     </div>
                     <div>
                         <label for="owner_password">Password</label>
-                        <input id="owner_password" name="owner_password" type="password" required autocomplete="new-password">
+                        <input id="owner_password" name="owner_password" type="password" required autocomplete="new-password" minlength="8">
                         @error('owner_password')<span class="error">{{ $message }}</span>@enderror
                     </div>
                     <div>
                         <label for="owner_password_confirmation">Confirm password</label>
-                        <input id="owner_password_confirmation" name="owner_password_confirmation" type="password" required autocomplete="new-password">
+                        <input id="owner_password_confirmation" name="owner_password_confirmation" type="password" required autocomplete="new-password" minlength="8">
                     </div>
                 </div>
             </fieldset>
 
             <div class="actions">
                 <p>Installation may take a minute. Keep this page open until it completes.</p>
-                <button class="button" type="submit" @disabled(! $preflight['ready'])>
-                    <span class="button-label">Install site</span>
+                <button class="button" type="submit" @disabled(! $preflightReady)>
+                    <span class="button-label">Install OpenLot</span>
                 </button>
             </div>
         </form>
     </main>
 
+    <script src="{{ $assetBase }}/js/openlot.js" defer></script>
     <script>
         (() => {
             const form = document.getElementById('install-form');
@@ -197,8 +220,9 @@
             updateDatabaseFields();
 
             form.addEventListener('submit', () => {
+                if (button.disabled) return;
                 button.disabled = true;
-                label.textContent = 'Installing…';
+                label.textContent = 'Installing OpenLot…';
             });
         })();
     </script>

@@ -18,17 +18,21 @@ class AppServiceProvider extends ServiceProvider
         Paginator::defaultView('vendor.pagination.openlot');
         Paginator::defaultSimpleView('vendor.pagination.openlot');
 
+        // Avoid forcing APP_URL during first-run install — a production APP_URL in
+        // .env.example would otherwise break installer CSS/JS on localhost.
+        $installed = is_file(storage_path('app/installed'));
         $appUrl = env('APP_URL');
 
         if (
-            ! $this->app->runningUnitTests()
+            $installed
+            && ! $this->app->runningUnitTests()
             && is_string($appUrl)
             && $appUrl !== ''
         ) {
             URL::forceRootUrl(rtrim($appUrl, '/'));
         }
 
-        if (config('boilerplate.security.force_https')) {
+        if ($installed && config('boilerplate.security.force_https')) {
             $this->app['request']->server->set('HTTPS', 'on');
         }
     }

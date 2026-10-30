@@ -8,6 +8,7 @@ use App\Domains\Install\Services\DatabaseProvisioner;
 use App\Domains\Install\Services\EnvironmentWriter;
 use App\Domains\Install\Services\InstallationState;
 use App\Domains\Install\Services\PreflightService;
+use App\Domains\Settings\Services\SettingsCatalog;
 use App\Domains\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
@@ -68,6 +69,7 @@ class InstallApplicationAction
 
             $this->createOrRecoverOwner($data);
             Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\OpenLotSeeder', '--force' => true]);
+            app(SettingsCatalog::class)->ensureDefaults();
             $this->environment->write([
                 'SESSION_DRIVER' => 'database',
                 'CACHE_STORE' => 'database',
@@ -126,10 +128,11 @@ class InstallApplicationAction
             // Create the owner directly — do not fire UserRegistered / verification
             // mail during install (verification routes may be API-only, and the
             // installer marks this account verified immediately).
+            // Pass a plain password — the User model hashed cast will hash once.
             User::query()->create([
                 'name' => $data->owner_name,
                 'email' => $data->owner_email,
-                'password' => Hash::make($data->owner_password),
+                'password' => $data->owner_password,
                 'email_verified_at' => now(),
                 'role' => 'admin',
                 'is_active' => true,

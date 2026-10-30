@@ -7,7 +7,6 @@ use App\Domains\Parking\Models\ParkingSpot;
 use App\Domains\Settings\Services\SettingsCatalog;
 use App\Domains\User\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class OpenLotSeeder extends Seeder
@@ -20,7 +19,7 @@ class OpenLotSeeder extends Seeder
                 'uuid' => (string) Str::uuid(),
                 'email' => 'admin@openlot.companyop.com',
                 'name' => 'OpenLot Admin',
-                'password' => Hash::make('password'),
+                'password' => 'password',
                 'email_verified_at' => now(),
                 'role' => 'admin',
                 'is_active' => true,

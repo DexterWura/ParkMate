@@ -60,8 +60,10 @@ class InstallerTest extends TestCase
     {
         $this->get('/install')
             ->assertOk()
-            ->assertSee('Set up your site')
-            ->assertSee('Server preflight');
+            ->assertSee('Install OpenLot')
+            ->assertSee('Server preflight')
+            ->assertSee('Admin account')
+            ->assertSee('/css/openlot.css', false);
     }
 
     public function test_installer_is_hidden_after_installation(): void
@@ -102,13 +104,13 @@ class InstallerTest extends TestCase
     public function test_mysql_database_identifier_is_strictly_validated(): void
     {
         $this->from('/install')->post('/install', [
-            'app_name' => 'Shipit',
-            'app_url' => 'https://shipit.test',
+            'app_name' => 'OpenLot',
+            'app_url' => 'https://openlot.test',
             'db_connection' => 'mysql',
             'db_host' => '127.0.0.1',
             'db_port' => 3306,
-            'db_database' => 'shipit-production',
-            'db_username' => 'shipit',
+            'db_database' => 'openlot-production',
+            'db_username' => 'openlot',
             'owner_name' => 'Site Owner',
             'owner_email' => 'owner@example.com',
             'owner_password' => 'StrongPassword123!',
@@ -133,8 +135,8 @@ class InstallerTest extends TestCase
         $this->app->instance(EnvironmentWriter::class, $environment);
 
         $response = $this->post('/install', [
-            'app_name' => 'Installed Shipit',
-            'app_url' => 'https://shipit.test',
+            'app_name' => 'OpenLot',
+            'app_url' => 'https://openlot.companyop.com',
             'db_connection' => 'sqlite',
             'owner_name' => 'Site Owner',
             'owner_email' => 'owner@example.com',
@@ -144,16 +146,25 @@ class InstallerTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('Installation complete');
+            ->assertSee('Ready to go')
+            ->assertSee('Open admin login');
 
         $this->assertFileExists($this->temporaryStorage.'/app/installed');
         $this->assertSame('sqlite', $environment->written['DB_CONNECTION']);
         $this->assertSame('database', $environment->written['SESSION_DRIVER']);
+        $this->assertSame('sync', $environment->written['QUEUE_CONNECTION']);
+        $this->assertSame('true', $environment->written['FORCE_HTTPS']);
         $this->assertDatabaseHas('users', [
             'name' => 'Site Owner',
             'email' => 'owner@example.com',
+            'role' => 'admin',
         ]);
-        $this->assertNotNull(User::query()->where('email', 'owner@example.com')->value('email_verified_at'));
+        $owner = User::query()->where('email', 'owner@example.com')->first();
+        $this->assertNotNull($owner?->email_verified_at);
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('StrongPassword123!', $owner->password));
+        $this->assertDatabaseHas('parking_spots', ['id' => 'seed-samora-machel']);
+        $this->assertDatabaseHas('app_settings', ['key' => 'mapbox_token']);
+        $this->assertDatabaseHas('fee_rules', ['id' => 'fee-harare-on-street']);
     }
 
     public function test_failed_install_does_not_write_marker_or_reflash_passwords(): void
@@ -179,8 +190,8 @@ class InstallerTest extends TestCase
         $this->app->instance(DatabaseProvisioner::class, $database);
 
         $this->from('/install')->post('/install', [
-            'app_name' => 'Failed Shipit',
-            'app_url' => 'https://shipit.test',
+            'app_name' => 'Failed OpenLot',
+            'app_url' => 'https://openlot.test',
             'db_connection' => 'sqlite',
             'owner_name' => 'Site Owner',
             'owner_email' => 'owner@example.com',
