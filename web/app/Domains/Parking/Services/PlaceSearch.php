@@ -4,12 +4,15 @@ namespace App\Domains\Parking\Services;
 
 use App\Domains\Parking\Models\ParkingSpot;
 use App\Domains\Settings\Models\AppSetting;
+use App\Domains\Settings\Services\SettingsCatalog;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PlaceSearch
 {
+    public function __construct(private SettingsCatalog $settings) {}
+
     public function search(string $query): array
     {
         $q = trim($query);
@@ -33,10 +36,13 @@ class PlaceSearch
             ])
             ->all();
 
-        $cacheKey = 'nominatim:'.mb_strtolower($q);
-        $remote = Cache::remember($cacheKey, now()->addDay(), function () use ($q) {
-            return $this->fetchNominatim($q);
-        });
+        $remote = [];
+        if ($this->settings->bool('enable_nominatim_search')) {
+            $cacheKey = 'nominatim:'.mb_strtolower($q);
+            $remote = Cache::remember($cacheKey, now()->addDay(), function () use ($q) {
+                return $this->fetchNominatim($q);
+            });
+        }
 
         $merged = [];
         foreach (array_merge($local, $remote) as $item) {
@@ -51,20 +57,19 @@ class PlaceSearch
     {
         $base = rtrim(AppSetting::getValue('nominatim_url', 'https://nominatim.openstreetmap.org') ?? '', '/');
 
+        $lock = Cache::lock('nominatim-rate', 2);
+
         try {
             // Respect Nominatim 1 req/s guidance with a short lock.
-            $lock = Cache::lock('nominatim-rate', 2);
             $lock->block(3);
 
             $response = Http::withHeaders([
-                'User-Agent' => 'ParkMate/1.0 (parking finder; contact=admin@parkmate.local)',
+                'User-Agent' => 'OpenLot/1.0 (parking finder; contact=admin@openlot.companyop.com)',
             ])->timeout(20)->get($base.'/search', [
                 'q' => $query,
                 'format' => 'json',
                 'limit' => 8,
             ]);
-
-            $lock->release();
 
             if (! $response->successful()) {
                 return [];
@@ -85,6 +90,12 @@ class PlaceSearch
             Log::warning('Nominatim failed', ['error' => $e->getMessage()]);
 
             return [];
+        } finally {
+            try {
+                $lock->release();
+            } catch (\Throwable) {
+                // Lock may already be released or expired.
+            }
         }
     }
 }

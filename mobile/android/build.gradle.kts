@@ -6,17 +6,26 @@ plugins {
 }
 
 android {
-    namespace = "com.parkmate.android"
+    namespace = "com.openlot.android"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.parkmate.android"
+        applicationId = "com.openlot.android"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
-        // Points at the PHP web API (Shipit/Laravel). Emulator → host machine.
-        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000/api/v1\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://openlot.companyop.com/api/v1\"")
+    }
+
+    buildTypes {
+        debug {
+            // Emulator → host machine local PHP API
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000/api/v1\"")
+        }
+        release {
+            buildConfigField("String", "API_BASE_URL", "\"https://openlot.companyop.com/api/v1\"")
+        }
     }
 
     buildFeatures {

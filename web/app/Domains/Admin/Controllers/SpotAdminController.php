@@ -70,9 +70,9 @@ class SpotAdminController extends Controller
 
     public function ingest(ParkingCatalog $catalog): RedirectResponse
     {
-        $catalog->ensureZimbabwePrefetch();
+        $catalog->ensureZimbabwePrefetch(async: true);
 
-        return back()->with('status', 'Zimbabwe OSM ingest started/completed for cached cities.');
+        return back()->with('status', 'Zimbabwe OSM ingest queued for Harare, Bulawayo, Mutare, and Gweru. Spots will appear as each city finishes.');
     }
 
     private function validated(Request $request): array

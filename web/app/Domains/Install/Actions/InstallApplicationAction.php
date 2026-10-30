@@ -67,11 +67,11 @@ class InstallApplicationAction
             }
 
             $this->createOrRecoverOwner($data);
-            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\ParkMateSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\OpenLotSeeder', '--force' => true]);
             $this->environment->write([
                 'SESSION_DRIVER' => 'database',
                 'CACHE_STORE' => 'database',
-                'QUEUE_CONNECTION' => 'database',
+                'QUEUE_CONNECTION' => 'sync',
             ]);
             $this->installation->markInstalled();
         } finally {
@@ -87,12 +87,15 @@ class InstallApplicationAction
     {
         $mysql = $data->db_connection !== 'sqlite';
 
+        $forceHttps = str_starts_with(strtolower($data->app_url), 'https://') ? 'true' : 'false';
+
         return [
             'APP_NAME' => $data->app_name,
             'APP_ENV' => 'production',
             'APP_URL' => $data->app_url,
             'APP_KEY' => $key,
             'APP_DEBUG' => 'false',
+            'FORCE_HTTPS' => $forceHttps,
             'DB_CONNECTION' => $mysql ? 'mysql' : 'sqlite',
             'DB_HOST' => $mysql ? (string) $data->db_host : '',
             'DB_PORT' => $mysql ? (string) $data->db_port : '',
@@ -106,6 +109,7 @@ class InstallApplicationAction
             'DB_PASSWORD' => $mysql ? (string) $data->db_password : '',
             'SESSION_DRIVER' => 'file',
             'CACHE_STORE' => 'file',
+            // sync keeps OSM ingest working on shared hosting without a queue worker
             'QUEUE_CONNECTION' => 'sync',
         ];
     }

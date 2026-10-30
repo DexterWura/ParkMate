@@ -1,0 +1,1028 @@
+/* OpenLot — white / navy / orange */
+:root {
+    --navy: #0b1f3a;
+    --navy-soft: #16325a;
+    --navy-muted: #4a6280;
+    --orange: #e85d04;
+    --orange-hover: #d04f00;
+    --orange-soft: #fff1e6;
+    --white: #ffffff;
+    --paper: #f6f8fb;
+    --line: #d7e0ec;
+    --ink: #0b1f3a;
+    --muted: #5b6e86;
+    --free: #0f7a45;
+    --free-bg: #e6f6ee;
+    --taken: #c62828;
+    --taken-bg: #fdecea;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 1px 2px rgba(11, 31, 58, 0.06), 0 8px 24px rgba(11, 31, 58, 0.06);
+    --font: "IBM Plex Sans", "Segoe UI", sans-serif;
+    --font-display: "Fraunces", Georgia, serif;
+    --side-w: 248px;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+ul { margin: 0; padding-left: 1.1rem; }
+
+.ol-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* —— Admin shell —— */
+.ol-shell {
+    display: grid;
+    grid-template-columns: var(--side-w) 1fr;
+    min-height: 100vh;
+}
+
+.ol-side {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    padding: 1.5rem 1rem 1.25rem;
+    background:
+        linear-gradient(180deg, rgba(232, 93, 4, 0.12) 0%, transparent 28%),
+        var(--navy);
+    color: #e8eef7;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    z-index: 40;
+}
+
+.ol-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+}
+
+.ol-brand-mark {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 7px;
+    background: var(--orange);
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.03em;
+}
+
+.ol-brand-text {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.ol-brand-sub {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--font);
+    font-size: 0.72rem;
+    color: #9eb0c8;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.ol-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.ol-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: var(--radius);
+    color: #c5d2e4;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ol-nav a:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.ol-nav a.active {
+    background: rgba(232, 93, 4, 0.16);
+    color: #fff;
+    border-left-color: var(--orange);
+}
+
+.ol-nav-ico {
+    width: 1.1rem;
+    text-align: center;
+    opacity: 0.85;
+    font-size: 0.85rem;
+}
+
+.ol-side-foot {
+    padding: 0.75rem 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.78rem;
+    color: #9eb0c8;
+}
+
+.ol-main {
+    min-width: 0;
+    padding: 1.5rem 1.75rem 2.5rem;
+}
+
+.ol-topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.35rem;
+}
+
+.ol-topbar h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 2.4vw, 2rem);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    color: var(--navy);
+}
+
+.ol-subtitle {
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.ol-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.ol-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    cursor: pointer;
+}
+
+.ol-menu-btn span {
+    display: block;
+    width: 1.1rem;
+    height: 2px;
+    background: var(--navy);
+    position: relative;
+}
+
+.ol-menu-btn span::before,
+.ol-menu-btn span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--navy);
+}
+
+.ol-menu-btn span::before { top: -5px; }
+.ol-menu-btn span::after { top: 5px; }
+
+.ol-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 31, 58, 0.45);
+    z-index: 30;
+}
+
+body.ol-nav-open .ol-backdrop { display: block; }
+
+/* —— Surfaces —— */
+.ol-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.15rem 1.25rem;
+    box-shadow: var(--shadow);
+}
+
+.ol-card h2,
+.ol-card h3 {
+    margin: 0 0 0.85rem;
+    font-family: var(--font-display);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: var(--navy);
+}
+
+.ol-card h3 { font-size: 1.1rem; }
+
+.ol-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin-bottom: 1.15rem;
+}
+
+.ol-grid-2 {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 1.15rem;
+}
+
+.ol-stat .ol-muted { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.ol-stat strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    color: var(--navy);
+}
+
+.ol-stat[data-accent="orange"] strong { color: var(--orange); }
+
+.ol-muted { color: var(--muted); }
+
+/* —— Forms —— */
+.ol-field { margin-bottom: 1rem; }
+.ol-field label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--navy-muted);
+}
+
+.ol-field .hint {
+    display: block;
+    margin: 0.25rem 0 0.45rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="url"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    min-height: 2.65rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+textarea { min-height: 6rem; resize: vertical; }
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--navy-soft);
+    box-shadow: 0 0 0 3px rgba(22, 50, 90, 0.12);
+}
+
+input[type="checkbox"] {
+    width: auto;
+    min-height: auto;
+    margin-right: 0.4rem;
+    accent-color: var(--orange);
+}
+
+/* —— Buttons —— */
+.ol-btn,
+button,
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 2.5rem;
+    padding: 0.55rem 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: var(--navy);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ol-btn:hover,
+button:hover,
+.btn:hover { background: var(--navy-soft); }
+
+.ol-btn-primary,
+button.primary,
+.btn.primary {
+    background: var(--orange);
+    color: var(--white);
+}
+
+.ol-btn-primary:hover,
+button.primary:hover,
+.btn.primary:hover { background: var(--orange-hover); }
+
+.ol-btn-secondary,
+button.secondary,
+.btn.secondary {
+    background: var(--white);
+    color: var(--navy);
+    border-color: var(--line);
+}
+
+.ol-btn-secondary:hover,
+button.secondary:hover,
+.btn.secondary:hover {
+    background: var(--paper);
+    border-color: var(--navy-muted);
+}
+
+.ol-btn-danger,
+button.danger,
+.btn.danger {
+    background: var(--taken-bg);
+    color: var(--taken);
+    border-color: #f3c4c0;
+}
+
+.ol-btn-danger:hover,
+button.danger:hover,
+.btn.danger:hover {
+    background: #f8d7d4;
+}
+
+.ol-btn-ghost {
+    background: transparent;
+    color: var(--navy);
+    border-color: transparent;
+}
+
+.ol-toolbar {
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.ol-toolbar form {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: min(100%, 220px);
+}
+
+.ol-row-actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* —— Tables —— */
+.ol-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 560px;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.75rem 0.55rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    font-size: 0.92rem;
+}
+
+th {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--navy-muted);
+}
+
+tbody tr:hover td { background: rgba(11, 31, 58, 0.02); }
+
+.ol-badge,
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    background: #e8eef6;
+    color: var(--navy-soft);
+}
+
+.ol-badge.free,
+.badge.free { background: var(--free-bg); color: var(--free); }
+.ol-badge.taken,
+.badge.taken { background: var(--taken-bg); color: var(--taken); }
+
+/* —— Alerts —— */
+.ol-flash,
+.flash {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius);
+    border: 1px solid #b7e4c7;
+    background: var(--free-bg);
+    color: #14532d;
+}
+
+.ol-errors,
+.errors {
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius);
+    border: 1px solid #f3c4c0;
+    background: var(--taken-bg);
+    color: #7f1d1d;
+}
+
+.ol-flash-close {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    min-height: auto;
+    padding: 0;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ol-flash-close:hover { background: transparent; opacity: 0.7; }
+
+/* Compat aliases used by older blade class names */
+.card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.15rem 1.25rem; box-shadow: var(--shadow); }
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 1.15rem; }
+.stat strong { display: block; margin-top: 0.35rem; font-family: var(--font-display); font-size: 2rem; font-weight: 650; color: var(--navy); }
+.muted { color: var(--muted); }
+.toolbar { display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.row-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; }
+.field { margin-bottom: 1rem; }
+.field label { display: block; margin-bottom: 0.35rem; font-size: 0.86rem; font-weight: 600; color: var(--navy-muted); }
+.brand { font-family: var(--font-display); }
+
+/* —— Auth / marketing shells —— */
+.ol-auth {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background:
+        linear-gradient(135deg, rgba(11, 31, 58, 0.04) 0%, transparent 42%),
+        linear-gradient(0deg, var(--orange-soft) 0%, transparent 38%),
+        var(--white);
+}
+
+.ol-auth-card {
+    width: min(420px, 100%);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.ol-auth-card h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    color: var(--navy);
+}
+
+.ol-auth-card > p {
+    margin: 0.4rem 0 1.1rem;
+    color: var(--muted);
+}
+
+.ol-auth-card button[type="submit"] {
+    width: 100%;
+    margin-top: 0.75rem;
+    background: var(--orange);
+}
+
+.ol-auth-card button[type="submit"]:hover { background: var(--orange-hover); }
+
+.ol-check-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+/* —— Marketing page —— */
+.ol-site {
+    background: var(--white);
+    color: var(--ink);
+}
+
+.ol-site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1.5rem;
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+}
+
+.ol-site-nav .ol-brand-text { color: var(--navy); }
+.ol-site-links { display: flex; gap: 1.25rem; align-items: center; color: var(--muted); font-size: 0.92rem; }
+.ol-site-links a:hover { color: var(--navy); }
+
+.ol-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(3rem, 8vw, 6rem) 1.5rem 3.5rem;
+    background:
+        radial-gradient(ellipse 80% 60% at 100% 0%, rgba(232, 93, 4, 0.14), transparent 55%),
+        linear-gradient(180deg, #f8fafc 0%, var(--white) 100%);
+}
+
+.ol-hero-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.ol-hero-kicker {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--white);
+    color: var(--navy-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ol-hero h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 650;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    color: var(--navy);
+}
+
+.ol-hero h1 em {
+    font-style: normal;
+    color: var(--orange);
+}
+
+.ol-hero-lead {
+    margin: 1rem 0 0;
+    max-width: 34rem;
+    color: var(--muted);
+    font-size: 1.08rem;
+}
+
+.ol-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+}
+
+.ol-section {
+    padding: 3rem 1.5rem;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.ol-section h2 {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: -0.02em;
+    color: var(--navy);
+}
+
+.ol-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.ol-feature {
+    padding: 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+}
+
+.ol-feature strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--navy);
+    font-size: 1.02rem;
+}
+
+.ol-feature p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.ol-feature-num {
+    display: inline-block;
+    margin-bottom: 0.65rem;
+    color: var(--orange);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 650;
+}
+
+.ol-footer {
+    border-top: 1px solid var(--line);
+    padding: 1.25rem 1.5rem 2rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* —— Installer —— */
+.ol-install {
+    min-height: 100vh;
+    background:
+        linear-gradient(180deg, var(--paper), var(--white));
+    color: var(--ink);
+}
+
+.ol-install-shell {
+    width: min(920px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 2.5rem 0 4rem;
+}
+
+.ol-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    list-style: none;
+}
+
+.ol-steps li {
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.ol-steps strong {
+    display: block;
+    color: var(--navy);
+    font-size: 0.86rem;
+}
+
+.ol-steps .active {
+    border-color: var(--orange);
+    box-shadow: inset 3px 0 0 var(--orange);
+}
+
+.ol-install .panel {
+    padding: clamp(1.1rem, 2.5vw, 1.6rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: var(--shadow);
+}
+
+.ol-install .panel + .panel { margin-top: 1rem; }
+
+.ol-install h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+    letter-spacing: -0.03em;
+    color: var(--navy);
+}
+
+.ol-install .lead {
+    max-width: 40rem;
+    margin: 0.65rem 0 0;
+    color: var(--muted);
+}
+
+.ol-install .alert {
+    margin: 1rem 0 0;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid;
+}
+
+.ol-install .alert-danger {
+    border-color: #f3c4c0;
+    background: var(--taken-bg);
+    color: #7f1d1d;
+}
+
+.ol-install .alert-warning {
+    border-color: #f5d0a9;
+    background: var(--warn-bg);
+    color: var(--warn);
+}
+
+.ol-install .checks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-top: 1.1rem;
+}
+
+.ol-install .check {
+    display: flex;
+    gap: 0.65rem;
+    padding: 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+}
+
+.ol-install .check-icon {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.ol-install .passed .check-icon { background: var(--free-bg); color: var(--free); }
+.ol-install .failed .check-icon { background: var(--taken-bg); color: var(--taken); }
+.ol-install .optional.failed .check-icon { background: var(--warn-bg); color: var(--warn); }
+
+.ol-install fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.ol-install fieldset + fieldset {
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+}
+
+.ol-install legend {
+    width: 100%;
+    margin-bottom: 0.9rem;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 650;
+    color: var(--navy);
+}
+
+.ol-install .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.ol-install .field-full { grid-column: 1 / -1; }
+
+.ol-install input,
+.ol-install select {
+    background: var(--white);
+    border-color: var(--line);
+    color: var(--ink);
+}
+
+.ol-install input:focus,
+.ol-install select:focus {
+    border-color: var(--navy-soft);
+    box-shadow: 0 0 0 3px rgba(22, 50, 90, 0.12);
+}
+
+.ol-install .hint { color: var(--muted); font-size: 0.78rem; }
+.ol-install .error { color: var(--taken); font-size: 0.78rem; }
+
+.ol-install .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.75rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--line);
+}
+
+.ol-install .actions p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+
+.ol-install .button {
+    min-width: 10rem;
+    background: var(--orange);
+    color: var(--white);
+    border: 0;
+    border-radius: var(--radius);
+    font-weight: 700;
+}
+
+.ol-install .button:hover { background: var(--orange-hover); }
+.ol-install .button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.ol-install .section-heading { margin-bottom: 1rem; }
+.ol-install .section-heading h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--navy);
+}
+.ol-install .section-heading p {
+    margin: 0.3rem 0 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+.ol-install label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 650;
+    color: var(--navy-muted);
+}
+.ol-install [hidden] { display: none !important; }
+
+/* —— Pagination —— */
+.ol-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    margin-top: 0.85rem;
+}
+
+.ol-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.2rem;
+    min-height: 2.2rem;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--navy);
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+a.ol-page:hover {
+    border-color: var(--navy-muted);
+    background: var(--paper);
+}
+
+.ol-page.is-current {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+}
+
+.ol-page.is-disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.ol-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--muted);
+}
+
+.ol-empty strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--navy);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+}
+
+/* —— Responsive —— */
+@media (max-width: 960px) {
+    .ol-grid-2,
+    .ol-feature-grid { grid-template-columns: 1fr; }
+
+    .ol-shell { grid-template-columns: 1fr; }
+
+    .ol-side {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: min(280px, 86vw);
+        transform: translateX(-105%);
+        transition: transform 0.2s ease;
+        box-shadow: var(--shadow);
+    }
+
+    body.ol-nav-open .ol-side { transform: translateX(0); }
+
+    .ol-menu-btn { display: inline-flex; }
+
+    .ol-main { padding: 1.1rem 1rem 2rem; }
+}
+
+@media (max-width: 680px) {
+    .ol-site-links { display: none; }
+    .ol-install .steps li:not(.active) { display: none; }
+    .ol-install .checks,
+    .ol-install .grid,
+    .ol-steps { grid-template-columns: 1fr; }
+    .ol-install .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .ol-install .button { width: 100%; }
+    .ol-topbar { flex-wrap: wrap; }
+}

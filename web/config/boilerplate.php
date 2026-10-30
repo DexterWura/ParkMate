@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'ParkMate'),
+    'name' => env('APP_NAME', 'OpenLot'),
 
     'api' => [
         'prefix' => 'api/v1',

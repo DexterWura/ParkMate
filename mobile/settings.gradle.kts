@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ParkMate"
+rootProject.name = "OpenLot"
 
 include(":shared")
 include(":server")

@@ -2,15 +2,15 @@ services:
   db:
     image: postgis/postgis:16-3.4
     environment:
-      POSTGRES_DB: parkmate
-      POSTGRES_USER: parkmate
-      POSTGRES_PASSWORD: parkmate
+      POSTGRES_DB: openlot
+      POSTGRES_USER: openlot
+      POSTGRES_PASSWORD: openlot
     ports:
       - "5432:5432"
     volumes:
-      - parkmate_pgdata:/var/lib/postgresql/data
+      - openlot_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U parkmate -d parkmate"]
+      test: ["CMD-SHELL", "pg_isready -U openlot -d openlot"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -20,9 +20,9 @@ services:
       context: .
       dockerfile: server/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://db:5432/parkmate
-      DATABASE_USER: parkmate
-      DATABASE_PASSWORD: parkmate
+      DATABASE_URL: jdbc:postgresql://db:5432/openlot
+      DATABASE_USER: openlot
+      DATABASE_PASSWORD: openlot
       MAPBOX_TOKEN: ${MAPBOX_TOKEN:-}
       PORT: "8080"
     ports:
@@ -32,4 +32,4 @@ services:
         condition: service_healthy
 
 volumes:
-  parkmate_pgdata:
+  openlot_pgdata:

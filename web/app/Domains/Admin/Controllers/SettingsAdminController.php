@@ -3,6 +3,7 @@
 namespace App\Domains\Admin\Controllers;
 
 use App\Domains\Settings\Models\AppSetting;
+use App\Domains\Settings\Services\SettingsCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -10,11 +11,16 @@ use Illuminate\View\View;
 
 class SettingsAdminController extends Controller
 {
-    public function edit(): View
+    public function edit(SettingsCatalog $catalog): View
     {
+        $catalog->ensureDefaults();
         $settings = AppSetting::query()->orderBy('group')->orderBy('key')->get()->groupBy('group');
+        $help = [];
+        foreach ($catalog->definitions() as $definition) {
+            $help[$definition['key']] = $definition['help'] ?? null;
+        }
 
-        return view('admin.settings.edit', compact('settings'));
+        return view('admin.settings.edit', compact('settings', 'help'));
     }
 
     public function update(Request $request): RedirectResponse

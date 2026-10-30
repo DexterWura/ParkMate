@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:8,1')
+        ->name('login.submit');
 
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -30,7 +32,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/spots/{spot}', [SpotAdminController::class, 'destroy'])->name('spots.destroy');
         Route::post('/spots/ingest', [SpotAdminController::class, 'ingest'])->name('spots.ingest');
 
+        Route::get('/fee-rules', [\App\Domains\Admin\Controllers\FeeRuleAdminController::class, 'index'])->name('fee-rules.index');
+        Route::post('/fee-rules', [\App\Domains\Admin\Controllers\FeeRuleAdminController::class, 'store'])->name('fee-rules.store');
+        Route::put('/fee-rules/{feeRule}', [\App\Domains\Admin\Controllers\FeeRuleAdminController::class, 'update'])->name('fee-rules.update');
+        Route::delete('/fee-rules/{feeRule}', [\App\Domains\Admin\Controllers\FeeRuleAdminController::class, 'destroy'])->name('fee-rules.destroy');
+
         Route::get('/reports', [ReportAdminController::class, 'index'])->name('reports.index');
+        Route::delete('/reports/{report}', [ReportAdminController::class, 'destroy'])->name('reports.destroy');
 
         Route::get('/settings', [SettingsAdminController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SettingsAdminController::class, 'update'])->name('settings.update');

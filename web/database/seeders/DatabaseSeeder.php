@@ -9,7 +9,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            ParkMateSeeder::class,
+            OpenLotSeeder::class,
         ]);
     }
 }

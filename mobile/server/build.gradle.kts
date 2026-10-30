@@ -9,7 +9,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("com.parkmate.server.ApplicationKt")
+    mainClass.set("com.openlot.server.ApplicationKt")
 }
 
 dependencies {
