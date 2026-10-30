@@ -4,7 +4,7 @@ build/
 .idea/
 *.iml
 local.properties
-data/
+/data/
 .env
 *.db
 .DS_Store
